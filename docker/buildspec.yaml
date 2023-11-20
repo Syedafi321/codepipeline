@@ -28,4 +28,5 @@ phases:
       - ls -la
       - kubectl config get-contexts
       - cd docker
+      - docker logout
       - kubectl apply -f deployment.yaml -n test
