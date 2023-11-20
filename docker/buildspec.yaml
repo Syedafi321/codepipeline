@@ -27,4 +27,6 @@ phases:
       - cd docker
       - docker logout
       - cat ~/.kube/config
+      - kubectl version --client
+
 
