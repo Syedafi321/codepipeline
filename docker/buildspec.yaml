@@ -26,3 +26,4 @@ phases:
       - echo Deploying to EKS
       - kubectl
       - ls -la
+      - kubectl config get-contexts
