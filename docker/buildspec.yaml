@@ -26,4 +26,4 @@ phases:
       - echo Deploying to EKS
       - cd docker
       - docker logout
-      - kubectl apply -f deployment.yaml 
+      - kubectl get ns
