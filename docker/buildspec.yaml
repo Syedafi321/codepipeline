@@ -10,6 +10,7 @@ phases:
       - mv ./kubectl /usr/local/bin/kubectl
       - echo Logging in to Amazon ECR...
       - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+      - aws eks --region $AWS_DEFAULT_REGION update-kubeconfig --name demo-cluster
   build:
     commands:
       - echo Build started on `date`
@@ -22,6 +23,5 @@ phases:
       - echo Pushing the Docker image...
       - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
       - echo Deploying to EKS
-      - aws eks --region us-east-1 update-kubeconfig --name demo-cluster
       - kubectl apply -f /docker/deployment.yaml
       - kubectl apply -f /docker/service.yaml
