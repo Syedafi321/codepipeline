@@ -23,5 +23,4 @@ phases:
       - echo Pushing the Docker image...
       - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
       - echo Deploying to EKS
-      - kubectl apply -f /docker/deployment.yaml
-      - kubectl apply -f /docker/service.yaml
+      - cat ~/.kube/config
