@@ -11,7 +11,7 @@ phases:
       - aws configure set aws_access_key_id "$AWS_ACCESS_KEY_ID"
       - aws configure set aws_secret_access_key "$AWS_SECRET_ACCESS_KEY"
       - aws configure set region "$AWS_DEFAULT_REGION"
-      - aws eks --region $AWS_DEFAULT_REGION update-kubeconfig --name demo-cluster --debug
+      - aws eks --region $AWS_DEFAULT_REGION update-kubeconfig --name demo-cluster
 
   build:
     commands:
@@ -33,5 +33,6 @@ phases:
       - cat ~/.kube/config
       - kubectl version --client
       - kubectl get namespace
+      - kubectl apply -f deployment.yaml
 
 
