@@ -1,5 +1,5 @@
 # Use the official Apache HTTP Server base image
-FROM httpd:latest
+FROM nginx:latest
 
 # Expose port 80 for web traffic
 EXPOSE 80
