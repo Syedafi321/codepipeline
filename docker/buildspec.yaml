@@ -26,4 +26,5 @@ phases:
       - echo Deploying to EKS
       - cd docker
       - docker logout
-      - kubectl get namespace
+      - cat ~/.kube/config
+
