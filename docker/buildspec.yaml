@@ -9,10 +9,10 @@ phases:
       - sudo apt install mysql-server -y
       - sudo service mysql start
       - sudo service mysql status
-      - export DB_USERNAME1=$(aws secretsmanager get-secret-value --secret-id <arn:aws:secretsmanager:us-east-1:303630164135:secret:rds-secret-YgafUh> --query SecretString --output text | jq -r '.username')
-      - export DB_PASSWORD1=$(aws secretsmanager get-secret-value --secret-id <arn:aws:secretsmanager:us-east-1:303630164135:secret:rds-secret-YgafUh> --query SecretString --output text | jq -r '.password')
-      - export DB_USERNAME2=$(aws secretsmanager get-secret-value --secret-id <arn:aws:secretsmanager:us-east-1:303630164135:secret:rds2-secret-qU5SV6> --query SecretString --output text | jq -r '.username')
-      - export DB_PASSWORD2=$(aws secretsmanager get-secret-value --secret-id <arn:aws:secretsmanager:us-east-1:303630164135:secret:rds2-secret-qU5SV6> --query SecretString --output text | jq -r '.password')
+      - export DB_USERNAME1=$(aws secretsmanager get-secret-value --secret-id arn:aws:secretsmanager:us-east-1:303630164135:secret:rds-secret-YgafUh --query SecretString --output text | jq -r '.username')
+      - export DB_PASSWORD1=$(aws secretsmanager get-secret-value --secret-id arn:aws:secretsmanager:us-east-1:303630164135:secret:rds-secret-YgafUh --query SecretString --output text | jq -r '.password')
+      - export DB_USERNAME2=$(aws secretsmanager get-secret-value --secret-id arn:aws:secretsmanager:us-east-1:303630164135:secret:rds2-secret-qU5SV6 --query SecretString --output text | jq -r '.username')
+      - export DB_PASSWORD2=$(aws secretsmanager get-secret-value --secret-id arn:aws:secretsmanager:us-east-1:303630164135:secret:rds2-secret-qU5SV6 --query SecretString --output text | jq -r '.password')
   build:
     commands:
       - echo Exporting the database...
