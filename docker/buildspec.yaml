@@ -23,4 +23,4 @@ phases:
     commands:
       - echo Importing the database...
       - aws s3 cp s3://sample2605/backup.sql backup.sql
-      - mysql -h database-2.clo6msq4w97q.us-east-1.rds.amazonaws.com -u $DB_USERNAME -p$DB_PASSWORD mydatabase < backup.sql
+      - mysql -h database-2.clo6msq4w97q.us-east-1.rds.amazonaws.com -u $DB_USERNAME2 -p$DB_PASSWORD2 mydatabase < backup.sql
