@@ -3,36 +3,21 @@ version: 0.2
 phases:
   pre_build:
     commands:
-      - echo Installing kubectl
-      - apt-get update -y
-      - curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.23.17/2023-11-14/bin/linux/amd64/kubectl
-      - chmod +x ./kubectl
-      - mv ./kubectl /usr/local/bin/kubectl
-      - aws configure set aws_access_key_id "$AWS_ACCESS_KEY_ID"
-      - aws configure set aws_secret_access_key "$AWS_SECRET_ACCESS_KEY"
-      - aws configure set region "$AWS_DEFAULT_REGION"
-      - aws eks --region $AWS_DEFAULT_REGION update-kubeconfig --name demo-cluster
-
+      - echo Installing mysql
+      - sudo apt install mysql-server
+      - sudo service mysql status
+      - export DB_USERNAME1=$(aws secretsmanager get-secret-value --secret-id <arn:aws:secretsmanager:us-east-1:303630164135:secret:rds-secret-YgafUh> --query SecretString --output text | jq -r '.username')
+      - export DB_PASSWORD1=$(aws secretsmanager get-secret-value --secret-id <arn:aws:secretsmanager:us-east-1:303630164135:secret:rds-secret-YgafUh> --query SecretString --output text | jq -r '.password')
+      - export DB_USERNAME2=$(aws secretsmanager get-secret-value --secret-id <arn:aws:secretsmanager:us-east-1:303630164135:secret:rds2-secret-qU5SV6> --query SecretString --output text | jq -r '.username')
+      - export DB_PASSWORD2=$(aws secretsmanager get-secret-value --secret-id <arn:aws:secretsmanager:us-east-1:303630164135:secret:rds2-secret-qU5SV6> --query SecretString --output text | jq -r '.password')
   build:
     commands:
-      - echo Build started on `date`
-      - echo Building the Docker image...
-      - echo "$DOCKERHUB_PASSWORD" | docker login --username "$DOCKERHUB_USERNAME" --password-stdin
-      - docker build -t $IMAGE_REPO_NAME:$IMAGE_TAG -f docker/Dockerfile .
-      - docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG      
+      - echo Exporting the database...
+      - mysqldump -h database-1.clo6msq4w97q.us-east-1.rds.amazonaws.com -u $DB_USERNAME1 -p$DB_PASSWORD1 mydatabase > backup.sql
+      - echo Copy the database to the s3...
+      - aws s3 cp backup.sql s3://sample2605/backup.sql
   post_build:
     commands:
-      - echo Build completed on `date`
-      - echo Pushing the Docker image...
-      - echo Logging in to Amazon ECR...
-      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
-      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
-      - echo Deploying to EKS
-      - cd docker
-      - docker logout
-      - cat ~/.kube/config
-      - kubectl version --client
-      - kubectl get namespace
-      - kubectl apply -f deployment.yaml
-
-
+      - echo Importing the database...
+      - aws s3 cp s3://sample2605/backup.sql backup.sql
+      - mysql -h database-2.clo6msq4w97q.us-east-1.rds.amazonaws.com -u $DB_USERNAME -p$DB_PASSWORD mydatabase < backup.sql
