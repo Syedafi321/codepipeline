@@ -5,7 +5,6 @@ phases:
     commands:
       - echo Installing mysql
       - sudo apt update -y
-      - sudo apt install sed -y
       - sudo apt install mysql-client-core-8.0
       - sudo apt install mysql-server -y
       - sudo service mysql start
@@ -17,12 +16,11 @@ phases:
   build:
     commands:
       - echo Exporting the database...
-      - mysqldump -h database-1.clo6msq4w97q.us-east-1.rds.amazonaws.com -u $DB_USERNAME1 -p$DB_PASSWORD1 mydatabase > backup.sql
+      - mysqldump -h database-1.clo6msq4w97q.us-east-1.rds.amazonaws.com -u $DB_USERNAME1 -p$DB_PASSWORD1 mydatabase > backup.sql --set-gtid-purged=OFF
       - echo Copy the database to the s3...
       - aws s3 cp backup.sql s3://sample2605/backup.sql
   post_build:
     commands:
       - echo Importing the database...
       - aws s3 cp s3://sample2605/backup.sql backup.sql
-      - sed -i old 's/\DEFINER\=`[^`]*`@`[^`]*`//g' backup.sql
-      - mysql -h database-2.clo6msq4w97q.us-east-1.rds.amazonaws.com -u $DB_USERNAME2 -p$DB_PASSWORD2 mydatabase < backup.sql
+      - mysql -h database-2.clo6msq4w97q.us-east-1.rds.amazonaws.com -u $DB_USERNAME2 -p$DB_PASSWORD2 mydatabase < backup.sql 
