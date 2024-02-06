@@ -5,6 +5,7 @@ phases:
     commands:
       - echo Installing mysql
       - sudo apt update -y
+      - sudo apt install sed -y
       - sudo apt install mysql-client-core-8.0
       - sudo apt install mysql-server -y
       - sudo service mysql start
@@ -23,4 +24,5 @@ phases:
     commands:
       - echo Importing the database...
       - aws s3 cp s3://sample2605/backup.sql backup.sql
+      - sed -i old 's/\DEFINER\=`[^`]*`@`[^`]*`//g' backup.sql
       - mysql -h database-2.clo6msq4w97q.us-east-1.rds.amazonaws.com -u $DB_USERNAME2 -p$DB_PASSWORD2 mydatabase < backup.sql
