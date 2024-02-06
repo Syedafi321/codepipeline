@@ -5,7 +5,9 @@ phases:
     commands:
       - echo Installing mysql
       - sudo apt update -y
+      - sudo apt install mysql-client-core-8.0
       - sudo apt install mysql-server -y
+      - sudo service mysql start
       - sudo service mysql status
       - export DB_USERNAME1=$(aws secretsmanager get-secret-value --secret-id <arn:aws:secretsmanager:us-east-1:303630164135:secret:rds-secret-YgafUh> --query SecretString --output text | jq -r '.username')
       - export DB_PASSWORD1=$(aws secretsmanager get-secret-value --secret-id <arn:aws:secretsmanager:us-east-1:303630164135:secret:rds-secret-YgafUh> --query SecretString --output text | jq -r '.password')
